@@ -93,7 +93,6 @@ var validHtmlElements = [
   "output",
   "p",
   "param",
-  "path",
   "picture",
   "plaintext",
   "portal",
@@ -101,7 +100,6 @@ var validHtmlElements = [
   "progress",
   "q",
   "rb",
-  "rect",
   "rp",
   "rt",
   "rtc",
@@ -145,24 +143,71 @@ var validHtmlElements = [
   "xmp",
 ];
 
+var validSvgElements = [
+  "defs",
+  "g",
+  "marker",
+  "mask",
+  "pattern",
+  "switch",
+  "symbol",
+  "feBlend",
+  "feColorMatrix",
+  "feComponentTransfer",
+  "feComposite",
+  "feConvolveMatrix",
+  "feDiffuseLighting",
+  "feDisplacementMap",
+  "feFlood",
+  "feGaussianBlur",
+  "feImage",
+  "feMerge",
+  "feMorphology",
+  "feOffset",
+  "feSpecularLighting",
+  "feTile",
+  "feTurbulence",
+  "linearGradient",
+  "radialGradient",
+  "stop",
+  "circle",
+  "ellipse",
+  "image",
+  "line",
+  "path",
+  "polygon",
+  "polyline",
+  "rect",
+  "text",
+  "use",
+  "textPath",
+  "tspan",
+];
+
 module.exports = {
   rules: {
-    "html-spell-check": {
+    "svg-html-spell-check": {
       create: function(context) {
         return {
           JSXElement(node) {
             var elementName = node.openingElement.name.name;
-            if (!elementName) return;
+            if (!elementName) {
+              return;
+            }
             var firstChar = elementName[0];
 
             if (firstChar !== firstChar.toLowerCase()) {
               return;
             }
-            if (!validHtmlElements.includes(elementName)) {
+
+            if (
+              !validHtmlElements.includes(elementName) &&
+              !validSvgElements.includes(elementName)
+            ) {
               context.report(
                 node,
                 node.loc,
-                elementName + " is not a valid HTML element"
+                elementName + " is not a valid HTML or svg element"
               );
             }
           },
